@@ -24,7 +24,7 @@ cd zadanie
 #download repo Dockerimage
 git clone https://github.com/drhelius/docker-helloworld-python-microservice.git
 cd docker-helloworld-python-microservice
-#set Gcloud config
+#set G-cloud config
 gcloud config set project kubernetes-54610
 gcloud config set compute/zone us-central1-a
 export PROJECT_ID="$(gcloud config get-value project -q)"
