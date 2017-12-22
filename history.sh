@@ -1,3 +1,4 @@
+${-------------------------------------Install cloud sdk & kubectl--------------------------------------------}
 # Add the Cloud SDK distribution URI as a package source\
 echo "deb http://packages.cloud.google.com/apt $CLOUD_SDK_REPO main" | sudo tee -a /etc/apt/sources.list.d/google-cloud-sdk.list\
 
@@ -17,46 +18,58 @@ gcloud auth login
 
 gcloud components install kubectl
 sudo apt-get install kubectl
-
+${-------------------------------------Start task--------------------------------------------}
 #zadnie start
 mkdir zadanie
 cd zadanie
-#download repo Dockerimage
-git clone https://github.com/drhelius/docker-helloworld-python-microservice.git
-cd docker-helloworld-python-microservice
+${-------------------------------------Setup var--------------------------------------------}
 #set G-cloud config
 gcloud config set project kubernetes-54610
 gcloud config set compute/zone us-central1-a
 export PROJECT_ID="$(gcloud config get-value project -q)"
 echo $PROJECT_ID
 
+${-------------------------------------Download and build image--------------------------------------------}
+#download repo Dockerimage
+git clone https://github.com/drhelius/docker-helloworld-python-microservice.git
+cd docker-helloworld-python-microservice
 sudo docker build -t gcr.io/${PROJECT_ID}/hello-app:v1 .
 sudo docker images
+
 #send to google repo
 sudo gcloud docker -- push gcr.io/${PROJECT_ID}/hello-app:v1
+
 #run locally for testing image
 sudo docker run --rm -p 8080:8080 gcr.io/${PROJECT_ID}/hello-app:v1
+
+${-------------------------------------Run Container cluster--------------------------------------------}
 #create kubernetes cluster "hello-cluster" with 3 nodes
 gcloud container clusters create hello-cluster --num-nodes=3
 gcloud compute instances list
+
 #login to cluster
 gcloud container clusters get-credentials hello-cluster
+
 #run helloworld from google repo
 kubectl run hello-web --image=gcr.io/${PROJECT_ID}/hello-app:v1 --port 8080
 kubectl get pods
+
 #run LoadBalancer with gate to internet
 kubectl expose deployment hello-web --type=LoadBalancer --port 80 --target-port 8080
 kubectl get pods
-
 kubectl get service
+
 #run in scale
 kubectl scale deployment hello-web --replicas=3
 kubectl get pods
+
 #check listo of deployment app "hello-app"
 kubectl get deployment hello-web
 kubectl get pods
+
 #Deploy changes in app
 vim hello.py
+${-------------------------------------New Version Deploy--------------------------------------------}
 #rebuild v2
 sudo docker build -t gcr.io/${PROJECT_ID}/hello-app:v2 .
 # push to repo
