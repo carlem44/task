@@ -76,6 +76,7 @@ sudo docker build -t gcr.io/${PROJECT_ID}/hello-app:v2 .
 sudo gcloud docker -- push gcr.io/${PROJECT_ID}/hello-app:v2
 #Deploy v2
 kubectl set image deployment/hello-web hello-web=gcr.io/${PROJECT_ID}/hello-app:v2
+${-------------------------------------Destroy Kubernetes Cluster--------------------------------------------}
 # clean-up
 kubectl delete service hello-web
 gcloud compute forwarding-rules list
