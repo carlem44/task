@@ -1,0 +1,39 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: pastely-backend
+spec:
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        app: pastely
+        tier: backend
+    spec:
+      containers:
+        - name: pastely-backend
+          image: gcr.io/pastely-1357/pastely-backend:603e7a961da56097c62b52d4bc2abd628b3835f1.staging.v1
+          ports:
+            - name: http
+              containerPort: 8000
+          livenessProbe:
+            httpGet:
+              path: /api/v1/paste/view/HEALTHCK
+              port: 8000
+              scheme: HTTP
+            initialDelaySeconds: 5
+            timeoutSeconds: 5
+          readinessProbe:
+            httpGet:
+              path: /api/v1/paste/view/HEALTHCK
+              port: 8000
+              scheme: HTTP
+            initialDelaySeconds: 5
+            timeoutSeconds: 5
+          volumeMounts:
+            - name: config-storage
+              mountPath: /secrets
+      volumes:
+        - name: config-storage
+          secret:
+            secretName: pastely-config-secret
