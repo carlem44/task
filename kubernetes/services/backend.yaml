@@ -4,8 +4,8 @@ metadata:
   name: pastely-backend
 spec:
   ports:
-    - port: 8000
-      targetPort: 8000
+    - port: 8080
+      targetPort: 8080
   selector:
     app: pastely
     tier: backend

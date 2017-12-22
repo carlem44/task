@@ -1,13 +1,13 @@
 apiVersion: v1
 kind: Namespace
 metadata:
-  name: pastely-staging
+  name: helloworld-staging
   labels:
-    name: pastely-staging
+    name: helloworld-staging
 ---
 apiVersion: v1
 kind: Namespace
 metadata:
-  name: pastely-production
+  name: helloworld-production
   labels:
-    name: pastely-production
+    name: helloworld-production
